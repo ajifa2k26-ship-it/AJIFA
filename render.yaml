@@ -1,0 +1,42 @@
+# Blueprint Render : déploie l'API AJIFA automatiquement depuis GitHub
+# (Render > New > Blueprint > sélectionner ce dépôt)
+services:
+  - type: web
+    name: ajifa-api
+    runtime: node
+    rootDir: backend
+    plan: free # passer à "starter" (7 $/mois) pour éviter la mise en veille
+    region: frankfurt # région la plus proche du Sénégal
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: REVALIDATE_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLOUDINARY_FOLDER
+        value: ajifa
+      - key: CORS_ORIGINS
+        value: https://ajifa.sn,https://www.ajifa.sn
+      - key: FRONTEND_REVALIDATE_URL
+        value: https://ajifa.sn/api/revalidate
+      # À renseigner dans le tableau de bord Render (valeurs secrètes) :
+      - key: MONGODB_URI
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
