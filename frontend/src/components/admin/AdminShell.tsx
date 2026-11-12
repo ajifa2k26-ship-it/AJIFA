@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import { adminApi, tokenStore, type AdminUser } from '@/lib/admin-api';
-import { DressI, ExternalI, FolderI, GearI, HomeI, LogoutI, PlusI } from './AdminIcons';
+import { BagI, WalletI, DressI, ExternalI, FolderI, GearI, HomeI, LogoutI, PlusI } from './AdminIcons';
 
 type Toast = { message: string; type: 'ok' | 'error' } | null;
 type Ctx = { user: AdminUser | null; notify: (message: string, type?: 'ok' | 'error') => void; logout: () => void };
@@ -14,9 +14,11 @@ export const useAdmin = () => useContext(AdminContext);
 
 const NAV = [
   { href: '/admin', label: 'Accueil', icon: HomeI, exact: true },
+  { href: '/admin/commandes', label: 'Commandes', icon: BagI },
   { href: '/admin/produits', label: 'Articles', icon: DressI },
   { href: '/admin/produits/nouveau', label: 'Ajouter', icon: PlusI, mobileOnly: true },
   { href: '/admin/categories', label: 'Catégories', icon: FolderI },
+  { href: '/admin/paiement', label: 'Paiement', icon: WalletI, desktopOnly: true },
   { href: '/admin/parametres', label: 'Réglages', icon: GearI },
 ];
 
@@ -112,7 +114,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         <main className="adm-main">{children}</main>
 
         <nav className="adm-tabbar" aria-label="Navigation administration">
-          {NAV.map(({ href, label, icon: Icon, exact }) => (
+          {NAV.filter((n) => !n.desktopOnly).map(({ href, label, icon: Icon, exact }) => (
             <Link key={href} href={href} aria-current={(href.endsWith('/nouveau') ? pathname === href : isActive(href, exact)) ? 'page' : undefined}>
               <Icon /> {label}
             </Link>

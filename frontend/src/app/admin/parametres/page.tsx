@@ -1,12 +1,13 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState, type FormEvent } from 'react';
 import { adminApi } from '@/lib/admin-api';
 import type { Settings } from '@/lib/types';
 import { useAdmin } from '@/components/admin/AdminShell';
 import { ImageUploader } from '@/components/admin/fields';
 
-type TextKey = Exclude<keyof Settings, 'heroImage' | 'aboutImage' | 'updatedAt'>;
+type TextKey = { [K in keyof Settings]-?: Settings[K] extends string ? K : never }[keyof Settings];
 
 export default function SettingsPage() {
   const { notify } = useAdmin();
@@ -84,6 +85,12 @@ export default function SettingsPage() {
             {text('address', 'Adresse', { placeholder: 'Dakar, Sénégal' })}
           </div>
           {text('openingHours', 'Horaires', { area: true, placeholder: 'Lundi – Samedi : 10h – 20h\nDimanche : sur rendez-vous' })}
+        </div>
+
+        <div className="card">
+          <h2>Paiement & livraison</h2>
+          <p className="hint" style={{ marginBottom: 12 }}>Numéros Orange Money / Wave, paiement à la livraison et frais de livraison se règlent sur une page dédiée, protégée par votre mot de passe.</p>
+          <Link href="/admin/paiement" className="a-btn ghost sm">Gérer le paiement et la livraison</Link>
         </div>
 
         <div className="card">

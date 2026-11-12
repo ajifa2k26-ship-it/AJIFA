@@ -110,6 +110,10 @@ export default async function ProductPage({ params }: Params) {
           {p.description && <p className="description">{p.description}</p>}
 
           <ProductOptions
+            productId={p._id}
+            slug={p.slug}
+            image={p.images[0]?.url || ''}
+            price={p.price}
             name={p.name}
             url={url}
             priceLabel={formatPrice(p.price) || 'prix sur demande'}
@@ -130,8 +134,10 @@ export default async function ProductPage({ params }: Params) {
             <details>
               <summary>Livraison & retrait</summary>
               <div className="content">
-                Retrait possible à {settings.address || 'Dakar'}. Livraison à Dakar et dans les régions du Sénégal :
-                contactez-nous pour connaître les délais et tarifs.
+                {settings.deliveryInfo || 'Livraison à Dakar et dans les régions du Sénégal.'} Dakar et banlieue :{' '}
+                {formatPrice(settings.deliveryFeeDakar)} · Régions : {formatPrice(settings.deliveryFeeRegions)}
+                {settings.freeDeliveryFrom > 0 && <> · Offerte dès {formatPrice(settings.freeDeliveryFrom)} d&apos;achat</>}.
+                Retrait possible à {settings.address || 'Dakar'}.
               </div>
             </details>
             <details>

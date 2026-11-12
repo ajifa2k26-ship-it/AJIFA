@@ -1,7 +1,7 @@
 'use client';
 
 import { API_URL } from './site';
-import type { Category, ImageAsset, Product, Settings } from './types';
+import type { Category, ImageAsset, Order, OrderStatus, PaymentStatus, Product, Settings } from './types';
 
 const TOKEN_KEY = 'ajifa_admin_token';
 
@@ -99,6 +99,8 @@ export const adminApi = {
 
   settings: () => request<{ settings: Settings }>('/api/settings'),
   updateSettings: (data: Partial<Settings>) => mutate<{ settings: Settings }>('/api/settings', json('PUT', data)),
+  updatePayment: (data: PaymentInput & { currentPassword: string }) =>
+    mutate<{ settings: Settings }>('/api/settings/payment', json('PUT', data)),
 
   async upload(files: File[], folder: 'produits' | 'categories' | 'site' = 'produits'): Promise<ImageAsset[]> {
     const form = new FormData();
@@ -107,12 +109,24 @@ export const adminApi = {
     const data = await request<{ images: ImageAsset[] }>(`/api/upload?folder=${folder}`, { method: 'POST', body: form });
     return data.images;
   },
+  orders: (params: { status?: string; payment?: string; q?: string; page?: number } = {}) => {
+    const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => v).map(([k, v]) => [k, String(v)]));
+    return request<{ items: Order[]; total: number; page: number; pages: number; counts: Record<OrderStatus, number> }>(`/api/orders/admin?${qs}`);
+  },
+  order: (id: string) => request<{ item: Order }>(`/api/orders/admin/${id}`),
+  updateOrder: (id: string, data: Partial<{ status: OrderStatus; paymentStatus: PaymentStatus; adminNote: string; paymentReference: string }>) =>
+    request<{ item: Order }>(`/api/orders/admin/${id}`, json('PATCH', data)),
+  deleteOrder: (id: string) => request<{ ok: true }>(`/api/orders/admin/${id}`, json('DELETE')),
+
   discardImage: (publicId: string) => request<{ ok: true }>('/api/upload', json('DELETE', { publicId })),
 };
 
 export type ProductInput = Omit<Product, '_id' | 'category' | 'createdAt' | 'updatedAt' | 'slug'> & {
   category: string | null;
   slug?: string;
+};
+export type PaymentInput = Pick<Settings, 'codEnabled' | 'orangeMoneyNumber' | 'waveNumber' | 'waveLink' | 'freeMoneyNumber'> & {
+  allowedOrigins: string[];
 };
 export type CategoryInput = Omit<Category, '_id' | 'productCount' | 'slug'> & { slug?: string };
 

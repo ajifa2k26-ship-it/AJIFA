@@ -5,13 +5,14 @@ import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/admin-api';
 import type { Product } from '@/lib/types';
 import { useAdmin } from '@/components/admin/AdminShell';
-import { FolderI, GearI, PlusI } from '@/components/admin/AdminIcons';
+import { BagI, FolderI, GearI, PlusI, WalletI } from '@/components/admin/AdminIcons';
 
 export default function Dashboard() {
   const { user, notify } = useAdmin();
   const [products, setProducts] = useState<Product[] | null>(null);
   const [catCount, setCatCount] = useState<number | null>(null);
   const [whatsappMissing, setWhatsappMissing] = useState(false);
+  const [newOrders, setNewOrders] = useState<number | null>(null);
 
   useEffect(() => {
     Promise.all([adminApi.products(), adminApi.categories(), adminApi.settings()])
@@ -21,6 +22,10 @@ export default function Dashboard() {
         setWhatsappMissing(!s.settings.whatsapp);
       })
       .catch((e) => notify(e.message, 'error'));
+    adminApi
+      .orders({ status: 'new' })
+      .then((r) => setNewOrders(r.counts.new))
+      .catch(() => setNewOrders(null));
   }, [notify]);
 
   const published = products?.filter((p) => p.published).length ?? '—';
@@ -45,7 +50,16 @@ export default function Dashboard() {
         </div>
       )}
 
+      {!!newOrders && (
+        <div className="alert info">
+          <Link href="/admin/commandes" style={{ textDecoration: 'underline' }}>
+            {newOrders} nouvelle{newOrders > 1 ? 's' : ''} commande{newOrders > 1 ? 's' : ''} à traiter
+          </Link>
+        </div>
+      )}
+
       <div className="stats">
+        <Link href="/admin/commandes" className="stat"><div className="v">{newOrders ?? '—'}</div><div className="l">Nouvelles commandes</div></Link>
         <div className="stat"><div className="v">{published}</div><div className="l">Articles en ligne</div></div>
         <div className="stat"><div className="v">{featured}</div><div className="l">Coups de cœur</div></div>
         <div className="stat"><div className="v">{soldOut}</div><div className="l">Épuisés</div></div>
@@ -53,6 +67,10 @@ export default function Dashboard() {
       </div>
 
       <div className="quick">
+        <Link href="/admin/commandes">
+          <BagI />
+          <span><strong>Commandes</strong><small>Suivi, paiements, livraisons</small></span>
+        </Link>
         <Link href="/admin/produits/nouveau">
           <PlusI />
           <span><strong>Nouvel article</strong><small>Photos, prix, tailles…</small></span>
@@ -60,6 +78,10 @@ export default function Dashboard() {
         <Link href="/admin/categories">
           <FolderI />
           <span><strong>Catégories</strong><small>Robes, ensembles, accessoires…</small></span>
+        </Link>
+        <Link href="/admin/paiement">
+          <WalletI />
+          <span><strong>Paiement & livraison</strong><small>Orange Money, Wave, frais de livraison</small></span>
         </Link>
         <Link href="/admin/parametres">
           <GearI />

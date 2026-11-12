@@ -53,6 +53,8 @@ export default function Footer({ settings, categories }: { settings: Settings; c
             <ul>
               <li><Link href="/a-propos">Notre histoire</Link></li>
               <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/panier">Mon panier</Link></li>
+              <li><Link href="/suivi-commande">Suivre ma commande</Link></li>
             </ul>
           </div>
 

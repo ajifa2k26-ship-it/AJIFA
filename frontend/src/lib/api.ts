@@ -54,6 +54,15 @@ export const DEFAULT_SETTINGS: Settings = {
   tiktok: '',
   announcement: '',
   seoDescription: 'AJIFA, boutique de mode élégante à Dakar, Sénégal. Découvrez nos collections de vêtements raffinés.',
+  codEnabled: true,
+  orangeMoneyNumber: '',
+  waveNumber: '',
+  waveLink: '',
+  freeMoneyNumber: '',
+  deliveryFeeDakar: 2000,
+  deliveryFeeRegions: 3500,
+  freeDeliveryFrom: 0,
+  deliveryInfo: 'Livraison sous 24 à 48 h à Dakar et banlieue, 2 à 5 jours dans les régions.',
 };
 
 export async function getSettings(): Promise<Settings> {

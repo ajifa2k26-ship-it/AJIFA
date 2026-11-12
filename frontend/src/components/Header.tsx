@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { Category } from '@/lib/types';
 import { CloseIcon, MenuIcon, WhatsAppIcon } from './Icons';
+import CartButton from './cart/CartButton';
 
 type Props = { categories: Pick<Category, 'name' | 'slug'>[]; whatsappHref: string | null };
 
@@ -75,6 +76,7 @@ export default function Header({ categories, whatsappHref }: Props) {
                 <WhatsAppIcon />
               </a>
             )}
+            <CartButton />
           </div>
         </div>
       </header>
@@ -97,6 +99,8 @@ export default function Header({ categories, whatsappHref }: Props) {
           ))}
           <Link href="/a-propos">La maison</Link>
           <Link href="/contact">Contact</Link>
+          <Link href="/panier">Mon panier</Link>
+          <Link href="/suivi-commande">Suivre ma commande</Link>
         </nav>
         {whatsappHref && (
           <div className="mobile-menu-foot">

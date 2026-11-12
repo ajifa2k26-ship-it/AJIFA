@@ -53,5 +53,55 @@ export type Settings = {
   tiktok: string;
   announcement: string;
   seoDescription: string;
+  codEnabled: boolean;
+  orangeMoneyNumber: string;
+  waveNumber: string;
+  waveLink: string;
+  freeMoneyNumber: string;
+  paymentUpdatedAt?: string | null;
+  allowedOrigins?: string[];
+  deliveryFeeDakar: number;
+  deliveryFeeRegions: number;
+  freeDeliveryFrom: number;
+  deliveryInfo: string;
   updatedAt?: string;
+};
+
+export type PaymentMethod = 'cash' | 'orange_money' | 'wave' | 'free_money';
+export type OrderStatus = 'new' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+export type PaymentStatus = 'pending' | 'paid' | 'refunded';
+
+export type OrderItem = {
+  product?: string;
+  name: string;
+  slug: string;
+  image: string;
+  price: number;
+  size: string;
+  color: string;
+  quantity: number;
+};
+
+/** Commande telle que renvoyée à la cliente */
+export type PublicOrder = {
+  number: string;
+  createdAt: string;
+  customer: { name: string; city: string };
+  items: OrderItem[];
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+  paymentReference: string;
+  status: OrderStatus;
+};
+
+/** Commande complète (administration) */
+export type Order = Omit<PublicOrder, 'customer'> & {
+  _id: string;
+  customer: { name: string; phone: string; city: string; address: string; note: string };
+  deliveryZone: 'dakar' | 'regions';
+  adminNote: string;
+  updatedAt: string;
 };
