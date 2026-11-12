@@ -50,11 +50,18 @@ export function pickCategory(body = {}) {
 const SETTINGS_TEXT = [
   'siteName', 'tagline', 'heroTitle', 'heroSubtitle', 'aboutTitle', 'aboutText', 'phone', 'email',
   'address', 'openingHours', 'instagram', 'facebook', 'tiktok', 'announcement', 'seoDescription',
+  'orangeMoneyNumber', 'waveNumber', 'freeMoneyNumber', 'deliveryInfo',
 ];
 
 export function pickSettings(body = {}) {
   const out = {};
   for (const k of SETTINGS_TEXT) if (has(body, k)) out[k] = toStr(body[k], 3000);
+  if (has(body, 'codEnabled')) out.codEnabled = toBool(body.codEnabled);
+  if (has(body, 'waveLink')) {
+    const link = toStr(body.waveLink, 300);
+    out.waveLink = /^https:\/\//.test(link) ? link : '';
+  }
+  for (const k of ['deliveryFeeDakar', 'deliveryFeeRegions', 'freeDeliveryFrom']) if (has(body, k)) out[k] = toNum(body[k]) ?? 0;
   if (has(body, 'whatsapp')) out.whatsapp = String(body.whatsapp || '').replace(/\D/g, '').slice(0, 15);
   if (has(body, 'heroImage')) out.heroImage = toImage(body.heroImage);
   if (has(body, 'aboutImage')) out.aboutImage = toImage(body.aboutImage);

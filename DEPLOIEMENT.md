@@ -156,6 +156,26 @@ Changez ensuite le mot de passe dans **Réglages**.
    - *Coup de cœur* : mis en avant sur l'accueil
    - *Nouveauté* : badge « Nouveauté »
 
+### Boutique : panier et commandes
+
+Les clientes ajoutent des articles au panier (taille, couleur, quantité) puis commandent sur `/commande`
+en indiquant **nom, téléphone, ville et adresse de livraison**. Chaque commande reçoit un numéro (`AJ-1001`…)
+consultable sur `/suivi-commande` avec le téléphone utilisé.
+
+- **Réglages → Paiement** : paiement à la livraison (activé par défaut). Orange Money, Wave et Free Money / Mixx
+  apparaissent dès que leur numéro est renseigné. Un lien marchand Wave Business (optionnel) ajoute un bouton
+  « Payer avec Wave » avec le montant pré-rempli.
+- **Réglages → Livraison** : frais Dakar et banlieue, frais régions, seuil de livraison offerte.
+- **Commandes** : liste filtrable, fiche détaillée (appel / WhatsApp de la cliente), changement de statut
+  (Nouvelle → Confirmée → En livraison → Livrée, ou Annulée) et du paiement (En attente / Payée).
+
+Paiements mobiles : la cliente envoie le montant au numéro affiché puis saisit l'identifiant de transaction
+reçu par SMS. **Vérifiez la réception sur votre compte avant de marquer la commande « Payée »** — il n'y a
+pas encore de vérification automatique (elle nécessiterait un compte marchand API Wave / Orange Money).
+
+Les prix sont toujours recalculés par l'API à partir de la base : un panier modifié dans le navigateur ne
+peut pas changer le montant d'une commande.
+
 Astuce téléphone : ouvrez `/admin` dans Chrome/Safari puis « Ajouter à l'écran d'accueil »
 pour l'utiliser comme une application.
 
@@ -177,7 +197,9 @@ Dans `frontend/.env.local`, mettez `NEXT_PUBLIC_SITE_URL=http://localhost:3000` 
 `NEXT_PUBLIC_API_URL=http://localhost:4000`. Le site est sur <http://localhost:3000>, l'admin sur `/admin`.
 
 ## Évolutions possibles
-- Panier et paiement en ligne (Wave, Orange Money, carte via PayDunya / CinetPay)
+- Paiement en ligne vérifié automatiquement (API Wave Business, Orange Money, ou carte via PayDunya / CinetPay)
+- Notification (e-mail / SMS) à chaque nouvelle commande
+- Gestion des stocks par taille
 - Plusieurs comptes administrateurs
 - Version anglaise du site
 - Formulaire de rendez-vous pour essayage / sur-mesure

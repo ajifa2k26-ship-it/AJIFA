@@ -51,3 +51,15 @@ export const FacebookIcon = (p: P) => (
 export const TiktokIcon = (p: P) => (
   <svg {...base} {...p}><path d="M14 3v11.5a3.5 3.5 0 11-3.5-3.5M14 3c.5 3 2.5 4.5 5 4.5" /></svg>
 );
+export const BagIcon = (p: P) => (
+  <svg {...base} {...p}><path d="M5 8h14l-1 12H6L5 8z" /><path d="M9 10V6a3 3 0 016 0v4" /></svg>
+);
+export const MinusIcon = (p: P) => (
+  <svg {...base} {...p}><path d="M6 12h12" /></svg>
+);
+export const PlusIcon = (p: P) => (
+  <svg {...base} {...p}><path d="M12 6v12M6 12h12" /></svg>
+);
+export const CheckIcon = (p: P) => (
+  <svg {...base} {...p}><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+);

@@ -2,6 +2,9 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import JsonLd from '@/components/JsonLd';
 import { WhatsAppIcon } from '@/components/Icons';
+import CartProvider from '@/components/cart/CartProvider';
+import CartDrawer from '@/components/cart/CartDrawer';
+import './shop.css';
 import { getCategories, getSettings } from '@/lib/api';
 import { SITE_URL, whatsappLink } from '@/lib/site';
 
@@ -26,7 +29,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   };
 
   return (
-    <>
+    <CartProvider>
       <a href="#contenu" className="skip-link">Aller au contenu</a>
       {settings.announcement && <div className="announcement">{settings.announcement}</div>}
       <Header categories={categories.map(({ name, slug }) => ({ name, slug }))} whatsappHref={wa} />
@@ -38,6 +41,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         </a>
       )}
       <JsonLd data={organization} />
-    </>
+      <CartDrawer />
+    </CartProvider>
   );
 }

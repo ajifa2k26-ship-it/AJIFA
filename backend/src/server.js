@@ -14,6 +14,7 @@ import productRoutes from './routes/products.js';
 import categoryRoutes from './routes/categories.js';
 import settingsRoutes from './routes/settings.js';
 import uploadRoutes from './routes/upload.js';
+import orderRoutes from './routes/orders.js';
 
 const app = express();
 app.set('trust proxy', 1); // Render est derrière un proxy
@@ -46,6 +47,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.use((_req, res) => res.status(404).json({ error: 'Route introuvable' }));
 app.use(errorHandler);
