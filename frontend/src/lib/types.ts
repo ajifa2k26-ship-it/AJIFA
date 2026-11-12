@@ -58,6 +58,7 @@ export type Settings = {
   waveNumber: string;
   waveLink: string;
   freeMoneyNumber: string;
+  orangeMoneyLink?: string;
   orangeMoneyQr?: ImageAsset | null;
   waveQr?: ImageAsset | null;
   freeMoneyQr?: ImageAsset | null;

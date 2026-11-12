@@ -36,6 +36,7 @@ const settingsSchema = new mongoose.Schema(
     waveNumber: { type: String, default: '' },
     waveLink: { type: String, default: '' }, // lien marchand Wave (optionnel), ex : https://pay.wave.com/m/M_xxx/c/sn/
     freeMoneyNumber: { type: String, default: '' },
+    orangeMoneyLink: { type: String, default: '' }, // lien marchand Max it, ex : https://sugu.orange-sonatel.com/mp/xxx
     // QR codes marchands (image importée depuis l'admin), affichés à la cliente après la commande
     orangeMoneyQr: { type: imageSchema, default: null },
     waveQr: { type: imageSchema, default: null },

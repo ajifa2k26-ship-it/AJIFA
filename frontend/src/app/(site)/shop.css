@@ -641,3 +641,10 @@ a.cart-line-name:hover {
     display: flex;
   }
 }
+
+.pay-om-btn {
+  background: #ff7900;
+  border-color: #ff7900;
+  color: #fff;
+  margin-bottom: 12px;
+}
