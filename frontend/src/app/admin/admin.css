@@ -1000,3 +1000,7 @@ details.adv summary {
   cursor: pointer;
   color: var(--muted);
 }
+
+.pay-qr-up {
+  max-width: 180px;
+}

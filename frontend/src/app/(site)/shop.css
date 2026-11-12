@@ -583,3 +583,61 @@ a.cart-line-name:hover {
     grid-column: 2;
   }
 }
+
+/* QR code de paiement */
+.pay-qr {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin: 4px 0 18px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--line, #e7e1d6);
+  border-radius: 10px;
+}
+.pay-qr img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #fff;
+}
+.pay-qr p {
+  margin: 0 0 10px;
+}
+.pay-qr .btn-sm {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+.pay-qr-mobile {
+  display: none;
+  font-size: 0.88rem;
+  opacity: 0.8;
+}
+@media (max-width: 640px) {
+  .pay-qr {
+    flex-direction: column;
+    text-align: center;
+  }
+  .pay-qr img {
+    width: 240px;
+    height: 240px;
+  }
+  .pay-qr-mobile {
+    display: block;
+  }
+}
+
+/* Bouton #144# Orange Money : utile seulement sur téléphone */
+.pay-ussd {
+  display: none;
+  background: #ff7900;
+  border-color: #ff7900;
+  color: #fff;
+  margin-bottom: 12px;
+}
+@media (max-width: 640px) {
+  .pay-ussd {
+    display: flex;
+  }
+}

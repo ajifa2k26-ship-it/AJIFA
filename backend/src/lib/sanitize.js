@@ -104,6 +104,17 @@ export function pickPayment(body = {}, { normalizePhone, normalizeOrigin }) {
       out.waveLink = u.toString();
     }
   }
+  // QR codes : uniquement des images envoyées par l'admin sur notre Cloudinary
+  for (const k of ['orangeMoneyQr', 'waveQr', 'freeMoneyQr']) {
+    if (!has(body, k)) continue;
+    if (!body[k]) {
+      out[k] = null;
+      continue;
+    }
+    const img = toImage(body[k]);
+    if (!img || new URL(img.url).hostname !== 'res.cloudinary.com') fail('Image de QR code invalide : importez-la depuis cette page');
+    out[k] = img;
+  }
   if (has(body, 'allowedOrigins')) {
     const list = Array.isArray(body.allowedOrigins) ? body.allowedOrigins : String(body.allowedOrigins || '').split(/[\s,]+/);
     const clean = [];

@@ -24,7 +24,7 @@ router.post(
   asyncHandler(async (req, res) => {
     if (!cloudinaryEnabled) throw new HttpError(503, "Le stockage d'images (Cloudinary) n'est pas configuré");
     if (!req.files?.length) throw new HttpError(400, 'Aucune image reçue');
-    const folder = req.query.folder === 'site' ? 'site' : req.query.folder === 'categories' ? 'categories' : 'produits';
+    const folder = ['site', 'categories', 'paiement'].includes(req.query.folder) ? req.query.folder : 'produits';
     const results = await Promise.all(req.files.map((f) => uploadBuffer(f.buffer, folder)));
     res.status(201).json({
       images: results.map((r) => ({ url: r.secure_url, publicId: r.public_id, alt: '', width: r.width, height: r.height })),

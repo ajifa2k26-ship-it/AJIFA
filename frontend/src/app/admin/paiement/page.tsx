@@ -2,14 +2,16 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { adminApi, type PaymentInput } from '@/lib/admin-api';
-import type { Settings } from '@/lib/types';
+import type { ImageAsset, Settings } from '@/lib/types';
 import { formatPrice } from '@/lib/site';
 import { PAYMENT_LABELS, formatPhone, isValidPhone } from '@/lib/shop';
 import { useAdmin } from '@/components/admin/AdminShell';
-import { Toggle } from '@/components/admin/fields';
+import { ImageUploader, Toggle } from '@/components/admin/fields';
 import { LockI } from '@/components/admin/AdminIcons';
 
 type MobileKey = 'orangeMoneyNumber' | 'waveNumber' | 'freeMoneyNumber';
+type QrKey = 'orangeMoneyQr' | 'waveQr' | 'freeMoneyQr';
+const QR_KEY: Record<MobileKey, QrKey> = { orangeMoneyNumber: 'orangeMoneyQr', waveNumber: 'waveQr', freeMoneyNumber: 'freeMoneyQr' };
 const MOBILE: { key: MobileKey; method: 'orange_money' | 'wave' | 'free_money'; logo: string; hint: string }[] = [
   { key: 'orangeMoneyNumber', method: 'orange_money', logo: 'OM', hint: 'Numéro Orange Money qui reçoit les paiements' },
   { key: 'waveNumber', method: 'wave', logo: 'W', hint: 'Numéro Wave qui reçoit les paiements' },
@@ -20,13 +22,19 @@ type Form = {
   codEnabled: boolean;
   enabled: Record<MobileKey, boolean>;
   numbers: Record<MobileKey, string>;
+  qr: Record<MobileKey, ImageAsset | null>;
   waveLink: string;
   origins: string;
 };
 
 const toForm = (s: Settings): Form => ({
   codEnabled: s.codEnabled !== false,
-  enabled: { orangeMoneyNumber: !!s.orangeMoneyNumber, waveNumber: !!s.waveNumber || !!s.waveLink, freeMoneyNumber: !!s.freeMoneyNumber },
+  enabled: {
+    orangeMoneyNumber: !!s.orangeMoneyNumber || !!s.orangeMoneyQr,
+    waveNumber: !!s.waveNumber || !!s.waveLink || !!s.waveQr,
+    freeMoneyNumber: !!s.freeMoneyNumber || !!s.freeMoneyQr,
+  },
+  qr: { orangeMoneyNumber: s.orangeMoneyQr || null, waveNumber: s.waveQr || null, freeMoneyNumber: s.freeMoneyQr || null },
   numbers: {
     orangeMoneyNumber: s.orangeMoneyNumber ? formatPhone(s.orangeMoneyNumber) : '',
     waveNumber: s.waveNumber ? formatPhone(s.waveNumber) : '',
@@ -82,6 +90,7 @@ export default function PaymentPage() {
       if (!f.enabled[m.key]) continue;
       const v = f.numbers[m.key];
       if (m.key === 'waveNumber' && !v && f.waveLink) continue; // Wave possible avec le lien seul
+      if (!v && f.qr[m.key]) continue; // possible avec le QR code seul
       if (!isValidPhone(v) || v.replace(/\D/g, '').replace(/^221/, '').length !== 9) errs[m.key] = 'Numéro sénégalais à 9 chiffres (ex : 77 123 45 67)';
     }
     if (f.enabled.waveNumber && f.waveLink && !/^https:\/\/pay\.wave\.com\//.test(f.waveLink.trim())) {
@@ -104,6 +113,9 @@ export default function PaymentPage() {
       waveNumber: f.enabled.waveNumber ? f.numbers.waveNumber : '',
       waveLink: f.enabled.waveNumber ? f.waveLink.trim() : '',
       freeMoneyNumber: f.enabled.freeMoneyNumber ? f.numbers.freeMoneyNumber : '',
+      orangeMoneyQr: f.enabled.orangeMoneyNumber ? f.qr.orangeMoneyNumber : null,
+      waveQr: f.enabled.waveNumber ? f.qr.waveNumber : null,
+      freeMoneyQr: f.enabled.freeMoneyNumber ? f.qr.freeMoneyNumber : null,
       allowedOrigins: f.origins.split(/[\s,]+/).filter(Boolean),
     };
     try {
@@ -222,6 +234,18 @@ export default function PaymentPage() {
                         )}
                       </div>
                     )}
+                    <div className="field">
+                      <span className="label">QR code de paiement (optionnel)</span>
+                      <div className="pay-qr-up">
+                        <ImageUploader
+                          max={1}
+                          folder="paiement"
+                          value={f.qr[m.key] ? [f.qr[m.key] as ImageAsset] : []}
+                          onChange={(v) => upd({ qr: { ...f.qr, [m.key]: v[0] || null } })}
+                        />
+                      </div>
+                      <small>Photo ou capture nette de votre QR code marchand {PAYMENT_LABELS[m.method]}. La cliente le scanne pour payer.</small>
+                    </div>
                   </div>
                 )}
               </div>

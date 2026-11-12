@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useState, type FormEvent } from 'react';
 import type { PublicOrder, Settings } from '@/lib/types';
 import { formatPrice, whatsappLink } from '@/lib/site';
-import { ORDER_STATUS_LABELS, PAYMENT_LABELS, PAYMENT_STATUS_LABELS, formatPhone, paymentNumber, shopApi, waveLinkFor } from '@/lib/shop';
+import { ORDER_STATUS_LABELS, PAYMENT_LABELS, PAYMENT_STATUS_LABELS, formatPhone, paymentNumber, paymentQr, shopApi, waveLinkFor } from '@/lib/shop';
 import { WhatsAppIcon } from '../Icons';
 
 /** Récapitulatif d'une commande : articles, totaux, paiement et contact */
@@ -87,6 +87,10 @@ function PaymentInstructions({ order, phone, settings, onUpdate }: { order: Publ
 
   const number = paymentNumber(settings, order.paymentMethod);
   const waveLink = order.paymentMethod === 'wave' ? waveLinkFor(settings, order.total) : null;
+  const qr = paymentQr(settings, order.paymentMethod);
+  const app = order.paymentMethod === 'orange_money' ? 'Orange Money (ou Max it)' : PAYMENT_LABELS[order.paymentMethod];
+  // Lien de téléchargement Cloudinary (fl_attachment) pour enregistrer le QR sur le téléphone
+  const qrDownload = qr ? qr.replace('/upload/', '/upload/fl_attachment/') : null;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -106,8 +110,31 @@ function PaymentInstructions({ order, phone, settings, onUpdate }: { order: Publ
   return (
     <div className="pay-box">
       <h3>Payer avec {PAYMENT_LABELS[order.paymentMethod]}</h3>
+      {qr && (
+        <div className="pay-qr">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={qr} alt={`QR code de paiement ${PAYMENT_LABELS[order.paymentMethod]}`} />
+          <div>
+            <p>
+              Ouvrez l&apos;application <strong>{app}</strong>, touchez <strong>Scanner</strong> et visez ce QR code, puis
+              payez <strong>{amount}</strong>.
+            </p>
+            <p className="pay-qr-mobile">
+              Vous êtes sur votre téléphone ? Enregistrez l&apos;image, puis importez-la depuis la galerie dans l&apos;écran
+              Scanner de l&apos;application.
+            </p>
+            {qrDownload && (
+              <a className="btn btn-outline btn-sm" href={qrDownload} download>
+                Enregistrer le QR code
+              </a>
+            )}
+          </div>
+        </div>
+      )}
       <ol>
-        {waveLink ? (
+        {qr && !number && !waveLink ? (
+          <li>Scannez le QR code ci-dessus et payez <strong>{amount}</strong>.</li>
+        ) : waveLink ? (
           <li>
             Touchez le bouton ci-dessous pour payer <strong>{amount}</strong> avec Wave
             {number && <> (ou envoyez-les au <strong>{formatPhone(number)}</strong>)</>}.
@@ -122,6 +149,12 @@ function PaymentInstructions({ order, phone, settings, onUpdate }: { order: Publ
         <li>Indiquez la référence <strong>{order.number}</strong> si l&apos;application le permet.</li>
         <li>Saisissez ci-dessous l&apos;identifiant de transaction reçu par SMS.</li>
       </ol>
+      {order.paymentMethod === 'orange_money' && number && (
+        // Sur téléphone : ouvre le clavier avec #144# (menu Orange Money)
+        <a className="btn btn-block pay-ussd" href="tel:%23144%23">
+          Payer avec #144#
+        </a>
+      )}
       {waveLink && (
         <a className="btn btn-block pay-wave-btn" href={waveLink} target="_blank" rel="noopener">
           Payer {amount} avec Wave

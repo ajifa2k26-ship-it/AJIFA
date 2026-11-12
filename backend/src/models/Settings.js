@@ -36,6 +36,10 @@ const settingsSchema = new mongoose.Schema(
     waveNumber: { type: String, default: '' },
     waveLink: { type: String, default: '' }, // lien marchand Wave (optionnel), ex : https://pay.wave.com/m/M_xxx/c/sn/
     freeMoneyNumber: { type: String, default: '' },
+    // QR codes marchands (image importée depuis l'admin), affichés à la cliente après la commande
+    orangeMoneyQr: { type: imageSchema, default: null },
+    waveQr: { type: imageSchema, default: null },
+    freeMoneyQr: { type: imageSchema, default: null },
     paymentUpdatedAt: { type: Date, default: null }, // dernière modification des moyens de paiement
     // Adresses du site autorisées à appeler l'API, en plus de CORS_ORIGINS (ex : futur nom de domaine)
     allowedOrigins: { type: [String], default: [] },

@@ -102,7 +102,7 @@ export const adminApi = {
   updatePayment: (data: PaymentInput & { currentPassword: string }) =>
     mutate<{ settings: Settings }>('/api/settings/payment', json('PUT', data)),
 
-  async upload(files: File[], folder: 'produits' | 'categories' | 'site' = 'produits'): Promise<ImageAsset[]> {
+  async upload(files: File[], folder: 'produits' | 'categories' | 'site' | 'paiement' = 'produits'): Promise<ImageAsset[]> {
     const form = new FormData();
     const prepared = await Promise.all(files.map(compressImage));
     prepared.forEach((f) => form.append('images', f));
@@ -125,7 +125,7 @@ export type ProductInput = Omit<Product, '_id' | 'category' | 'createdAt' | 'upd
   category: string | null;
   slug?: string;
 };
-export type PaymentInput = Pick<Settings, 'codEnabled' | 'orangeMoneyNumber' | 'waveNumber' | 'waveLink' | 'freeMoneyNumber'> & {
+export type PaymentInput = Pick<Settings, 'codEnabled' | 'orangeMoneyNumber' | 'waveNumber' | 'waveLink' | 'freeMoneyNumber' | 'orangeMoneyQr' | 'waveQr' | 'freeMoneyQr'> & {
   allowedOrigins: string[];
 };
 export type CategoryInput = Omit<Category, '_id' | 'productCount' | 'slug'> & { slug?: string };

@@ -30,9 +30,9 @@ export function deliveryFee(settings, zone, subtotal) {
 export function enabledPaymentMethods(settings) {
   const methods = [];
   if (settings.codEnabled !== false) methods.push('cash');
-  if (settings.orangeMoneyNumber) methods.push('orange_money');
-  if (settings.waveNumber || settings.waveLink) methods.push('wave');
-  if (settings.freeMoneyNumber) methods.push('free_money');
+  if (settings.orangeMoneyNumber || settings.orangeMoneyQr?.url) methods.push('orange_money');
+  if (settings.waveNumber || settings.waveLink || settings.waveQr?.url) methods.push('wave');
+  if (settings.freeMoneyNumber || settings.freeMoneyQr?.url) methods.push('free_money');
   return methods;
 }
 
