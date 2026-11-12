@@ -24,13 +24,14 @@ type Form = {
   numbers: Record<MobileKey, string>;
   qr: Record<MobileKey, ImageAsset | null>;
   waveLink: string;
+  omLink: string;
   origins: string;
 };
 
 const toForm = (s: Settings): Form => ({
   codEnabled: s.codEnabled !== false,
   enabled: {
-    orangeMoneyNumber: !!s.orangeMoneyNumber || !!s.orangeMoneyQr,
+    orangeMoneyNumber: !!s.orangeMoneyNumber || !!s.orangeMoneyLink || !!s.orangeMoneyQr,
     waveNumber: !!s.waveNumber || !!s.waveLink || !!s.waveQr,
     freeMoneyNumber: !!s.freeMoneyNumber || !!s.freeMoneyQr,
   },
@@ -41,6 +42,7 @@ const toForm = (s: Settings): Form => ({
     freeMoneyNumber: s.freeMoneyNumber ? formatPhone(s.freeMoneyNumber) : '',
   },
   waveLink: s.waveLink || '',
+  omLink: s.orangeMoneyLink || '',
   origins: (s.allowedOrigins || []).join('\n'),
 });
 
@@ -48,7 +50,7 @@ export default function PaymentPage() {
   const { notify } = useAdmin();
   const [s, setS] = useState<Settings | null>(null);
   const [f, setF] = useState<Form | null>(null);
-  const [errors, setErrors] = useState<Partial<Record<MobileKey | 'waveLink' | 'none', string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<MobileKey | 'waveLink' | 'omLink' | 'none', string>>>({});
   const [askPwd, setAskPwd] = useState(false);
   const [pwd, setPwd] = useState('');
   const [saving, setSaving] = useState(false);
@@ -90,11 +92,15 @@ export default function PaymentPage() {
       if (!f.enabled[m.key]) continue;
       const v = f.numbers[m.key];
       if (m.key === 'waveNumber' && !v && f.waveLink) continue; // Wave possible avec le lien seul
+      if (m.key === 'orangeMoneyNumber' && !v && f.omLink) continue; // Orange Money possible avec le lien seul
       if (!v && f.qr[m.key]) continue; // possible avec le QR code seul
       if (!isValidPhone(v) || v.replace(/\D/g, '').replace(/^221/, '').length !== 9) errs[m.key] = 'Numéro sénégalais à 9 chiffres (ex : 77 123 45 67)';
     }
     if (f.enabled.waveNumber && f.waveLink && !/^https:\/\/pay\.wave\.com\//.test(f.waveLink.trim())) {
       errs.waveLink = 'Le lien doit commencer par https://pay.wave.com/';
+    }
+    if (f.enabled.orangeMoneyNumber && f.omLink && !/^https:\/\/([a-z0-9-]+\.)*orange-sonatel\.com\//i.test(f.omLink.trim())) {
+      errs.omLink = 'Le lien doit commencer par https://sugu.orange-sonatel.com/';
     }
     if (!active.length) errs.none = 'Activez au moins un moyen de paiement, sinon personne ne pourra commander.';
     setErrors(errs);
@@ -113,6 +119,7 @@ export default function PaymentPage() {
       waveNumber: f.enabled.waveNumber ? f.numbers.waveNumber : '',
       waveLink: f.enabled.waveNumber ? f.waveLink.trim() : '',
       freeMoneyNumber: f.enabled.freeMoneyNumber ? f.numbers.freeMoneyNumber : '',
+      orangeMoneyLink: f.enabled.orangeMoneyNumber ? f.omLink.trim() : '',
       orangeMoneyQr: f.enabled.orangeMoneyNumber ? f.qr.orangeMoneyNumber : null,
       waveQr: f.enabled.waveNumber ? f.qr.waveNumber : null,
       freeMoneyQr: f.enabled.freeMoneyNumber ? f.qr.freeMoneyNumber : null,
@@ -213,6 +220,27 @@ export default function PaymentPage() {
                       />
                       {errors[m.key] ? <small className="err">{errors[m.key]}</small> : <small>{m.hint}</small>}
                     </div>
+                    {m.key === 'orangeMoneyNumber' && (
+                      <div className="field">
+                        <label htmlFor="omLink">Lien de paiement Orange Money (optionnel)</label>
+                        <input
+                          id="omLink"
+                          className="input"
+                          type="url"
+                          placeholder="https://sugu.orange-sonatel.com/mp/…"
+                          value={f.omLink}
+                          onChange={(e) => {
+                            upd({ omLink: e.target.value });
+                            setErrors((x) => ({ ...x, omLink: undefined }));
+                          }}
+                        />
+                        {errors.omLink ? (
+                          <small className="err">{errors.omLink}</small>
+                        ) : (
+                          <small>Lien marchand Max it : la cliente ouvre l&apos;application Orange Money en un clic.</small>
+                        )}
+                      </div>
+                    )}
                     {m.key === 'waveNumber' && (
                       <div className="field">
                         <label htmlFor="waveLink">Lien de paiement Wave (optionnel)</label>

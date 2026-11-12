@@ -125,7 +125,7 @@ export type ProductInput = Omit<Product, '_id' | 'category' | 'createdAt' | 'upd
   category: string | null;
   slug?: string;
 };
-export type PaymentInput = Pick<Settings, 'codEnabled' | 'orangeMoneyNumber' | 'waveNumber' | 'waveLink' | 'freeMoneyNumber' | 'orangeMoneyQr' | 'waveQr' | 'freeMoneyQr'> & {
+export type PaymentInput = Pick<Settings, 'codEnabled' | 'orangeMoneyNumber' | 'waveNumber' | 'waveLink' | 'freeMoneyNumber' | 'orangeMoneyLink' | 'orangeMoneyQr' | 'waveQr' | 'freeMoneyQr'> & {
   allowedOrigins: string[];
 };
 export type CategoryInput = Omit<Category, '_id' | 'productCount' | 'slug'> & { slug?: string };

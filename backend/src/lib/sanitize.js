@@ -104,6 +104,23 @@ export function pickPayment(body = {}, { normalizePhone, normalizeOrigin }) {
       out.waveLink = u.toString();
     }
   }
+  if (has(body, 'orangeMoneyLink')) {
+    const link = toStr(body.orangeMoneyLink, 300);
+    if (!link) out.orangeMoneyLink = '';
+    else {
+      let u;
+      try {
+        u = new URL(link);
+      } catch {
+        fail('Lien Orange Money invalide');
+      }
+      // Seuls les liens officiels Orange Sonatel (Max it) sont acceptés
+      if (u.protocol !== 'https:' || !(u.hostname === 'orange-sonatel.com' || u.hostname.endsWith('.orange-sonatel.com'))) {
+        fail('Le lien Orange Money doit commencer par https://sugu.orange-sonatel.com/');
+      }
+      out.orangeMoneyLink = u.toString();
+    }
+  }
   // QR codes : uniquement des images envoyées par l'admin sur notre Cloudinary
   for (const k of ['orangeMoneyQr', 'waveQr', 'freeMoneyQr']) {
     if (!has(body, k)) continue;

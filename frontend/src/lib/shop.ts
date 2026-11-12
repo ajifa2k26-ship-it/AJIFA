@@ -46,7 +46,7 @@ export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
 export function enabledPaymentMethods(s: Settings): PaymentMethod[] {
   const m: PaymentMethod[] = [];
   if (s.codEnabled !== false) m.push('cash');
-  if (s.orangeMoneyNumber || s.orangeMoneyQr?.url) m.push('orange_money');
+  if (s.orangeMoneyNumber || s.orangeMoneyLink || s.orangeMoneyQr?.url) m.push('orange_money');
   if (s.waveNumber || s.waveLink || s.waveQr?.url) m.push('wave');
   if (s.freeMoneyNumber || s.freeMoneyQr?.url) m.push('free_money');
   return m;

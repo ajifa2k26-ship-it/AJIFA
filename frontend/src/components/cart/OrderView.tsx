@@ -88,6 +88,7 @@ function PaymentInstructions({ order, phone, settings, onUpdate }: { order: Publ
   const number = paymentNumber(settings, order.paymentMethod);
   const waveLink = order.paymentMethod === 'wave' ? waveLinkFor(settings, order.total) : null;
   const qr = paymentQr(settings, order.paymentMethod);
+  const omLink = order.paymentMethod === 'orange_money' && settings.orangeMoneyLink ? settings.orangeMoneyLink : null;
   const app = order.paymentMethod === 'orange_money' ? 'Orange Money (ou Max it)' : PAYMENT_LABELS[order.paymentMethod];
   // Lien de téléchargement Cloudinary (fl_attachment) pour enregistrer le QR sur le téléphone
   const qrDownload = qr ? qr.replace('/upload/', '/upload/fl_attachment/') : null;
@@ -132,7 +133,12 @@ function PaymentInstructions({ order, phone, settings, onUpdate }: { order: Publ
         </div>
       )}
       <ol>
-        {qr && !number && !waveLink ? (
+        {omLink ? (
+          <li>
+            Touchez le bouton ci-dessous : l&apos;application Orange Money (Max it) s&apos;ouvre. Payez <strong>{amount}</strong>
+            {number && <> (ou envoyez-les au <strong>{formatPhone(number)}</strong>)</>}.
+          </li>
+        ) : qr && !number && !waveLink ? (
           <li>Scannez le QR code ci-dessus et payez <strong>{amount}</strong>.</li>
         ) : waveLink ? (
           <li>
@@ -149,7 +155,12 @@ function PaymentInstructions({ order, phone, settings, onUpdate }: { order: Publ
         <li>Indiquez la référence <strong>{order.number}</strong> si l&apos;application le permet.</li>
         <li>Saisissez ci-dessous l&apos;identifiant de transaction reçu par SMS.</li>
       </ol>
-      {order.paymentMethod === 'orange_money' && number && (
+      {omLink && (
+        <a className="btn btn-block pay-om-btn" href={omLink} target="_blank" rel="noopener">
+          Payer {amount} avec Orange Money
+        </a>
+      )}
+      {order.paymentMethod === 'orange_money' && number && !omLink && (
         // Sur téléphone : ouvre le clavier avec #144# (menu Orange Money)
         <a className="btn btn-block pay-ussd" href="tel:%23144%23">
           Payer avec #144#

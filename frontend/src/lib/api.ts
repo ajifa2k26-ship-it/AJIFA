@@ -59,6 +59,7 @@ export const DEFAULT_SETTINGS: Settings = {
   waveNumber: '',
   waveLink: '',
   freeMoneyNumber: '',
+  orangeMoneyLink: '',
   orangeMoneyQr: null,
   waveQr: null,
   freeMoneyQr: null,
