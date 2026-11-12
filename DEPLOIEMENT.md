@@ -165,10 +165,10 @@ consultable sur `/suivi-commande` avec le téléphone utilisé.
 - **Paiement** (menu de l'admin) : activez / désactivez chaque moyen (à la livraison, Orange Money, Wave,
   Free Money / Mixx) et saisissez les numéros qui reçoivent l'argent. **Le mot de passe est redemandé à chaque
   modification** : une session restée ouverte ne suffit pas pour détourner les paiements. Les numéros sont vérifiés
-  (9 chiffres sénégalais) et seul un lien  est accepté pour Wave.
+  (9 chiffres sénégalais) et seul un lien `https://pay.wave.com/…` est accepté pour Wave.
 - **Paiement → Livraison** : frais Dakar et banlieue, frais régions, seuil de livraison offerte.
 - **Paiement → Avancé → Adresses du site** : le jour où vous achetez un nom de domaine, ajoutez-le ici
-  (ex : ) pour qu'il puisse passer des commandes, sans toucher à Render.
+  (ex : `https://ajifa.sn`) pour qu'il puisse passer des commandes, sans toucher à Render.
 - **Commandes** : liste filtrable, fiche détaillée (appel / WhatsApp de la cliente), changement de statut
   (Nouvelle → Confirmée → En livraison → Livrée, ou Annulée) et du paiement (En attente / Payée).
 
