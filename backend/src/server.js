@@ -15,6 +15,7 @@ import categoryRoutes from './routes/categories.js';
 import settingsRoutes from './routes/settings.js';
 import uploadRoutes from './routes/upload.js';
 import orderRoutes from './routes/orders.js';
+import { isAllowedOrigin, setExtraOrigins } from './lib/origins.js';
 
 const app = express();
 app.set('trust proxy', 1); // Render est derrière un proxy
@@ -26,7 +27,7 @@ app.use(
   cors({
     origin(origin, cb) {
       // Autorise les appels serveur-à-serveur (pas d'en-tête Origin) et les origines déclarées
-      if (!origin || config.corsOrigins.includes(origin)) return cb(null, true);
+      if (!origin || isAllowedOrigin(origin)) return cb(null, true);
       // Autorise les prévisualisations Vercel du projet si demandé
       if (process.env.CORS_ALLOW_VERCEL_PREVIEWS === 'true' && /\.vercel\.app$/.test(new URL(origin).hostname)) {
         return cb(null, true);
@@ -68,7 +69,8 @@ async function start() {
   await mongoose.connect(config.mongoUri, { serverSelectionTimeoutMS: 15000 });
   console.log('MongoDB connecté');
   await ensureAdmin();
-  await Settings.getSingleton();
+  const settings = await Settings.getSingleton();
+  setExtraOrigins(settings.allowedOrigins);
   if (!cloudinaryEnabled) console.warn("Cloudinary non configuré : l'envoi d'images est désactivé.");
   app.listen(config.port, () => console.log(`API AJIFA en écoute sur le port ${config.port}`));
 }

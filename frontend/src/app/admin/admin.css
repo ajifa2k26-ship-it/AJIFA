@@ -931,3 +931,72 @@
   background: #1f8f4e;
   border-color: #1f8f4e;
 }
+
+/* ---------- Paiement ---------- */
+.pay-admin {
+  display: flex;
+  flex-direction: column;
+}
+.pay-admin-row {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 14px;
+  align-items: start;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pay-admin-row:last-child {
+  border-bottom: 0;
+}
+.pay-admin-row .switch-row {
+  border-bottom: 0;
+}
+.pay-admin-body {
+  min-width: 0;
+  padding-bottom: 8px;
+}
+.pay-badge {
+  width: 40px;
+  height: 40px;
+  margin-top: 10px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+}
+.pay-badge.pay-cash {
+  background: var(--gold);
+}
+.pay-badge.pay-orange_money {
+  background: #ff7900;
+}
+.pay-badge.pay-wave {
+  background: #1dc8f2;
+}
+.pay-badge.pay-free_money {
+  background: #cd1f2c;
+}
+.pay-preview {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--ivory);
+  font-size: 14px;
+}
+.pay-preview strong {
+  font-weight: 500;
+}
+.err,
+.field small.err {
+  color: #b42318;
+}
+details.adv {
+  margin-top: 16px;
+  font-size: 14px;
+}
+details.adv summary {
+  cursor: pointer;
+  color: var(--muted);
+}

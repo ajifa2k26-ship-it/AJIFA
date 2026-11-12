@@ -1,13 +1,13 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState, type FormEvent } from 'react';
 import { adminApi } from '@/lib/admin-api';
 import type { Settings } from '@/lib/types';
 import { useAdmin } from '@/components/admin/AdminShell';
-import { ImageUploader, Toggle } from '@/components/admin/fields';
+import { ImageUploader } from '@/components/admin/fields';
 
 type TextKey = { [K in keyof Settings]-?: Settings[K] extends string ? K : never }[keyof Settings];
-type NumKey = 'deliveryFeeDakar' | 'deliveryFeeRegions' | 'freeDeliveryFrom';
 
 export default function SettingsPage() {
   const { notify } = useAdmin();
@@ -32,16 +32,6 @@ export default function SettingsPage() {
         <input id={k} className="input" type={opts.type || 'text'} value={s[k] as string} placeholder={opts.placeholder} onChange={(e) => set(k, e.target.value)} />
       )}
       {opts.hint && <small>{opts.hint}</small>}
-    </div>
-  );
-  const num = (k: NumKey, label: string, hint?: string) => (
-    <div className="field">
-      <label htmlFor={k}>{label}</label>
-      <div className="input-group">
-        <input id={k} className="input" type="number" inputMode="numeric" min={0} step={100} value={s[k] ?? 0} onChange={(e) => set(k, Math.max(0, Number(e.target.value) || 0))} />
-        <span className="suffix">FCFA</span>
-      </div>
-      {hint && <small>{hint}</small>}
     </div>
   );
 
@@ -98,25 +88,9 @@ export default function SettingsPage() {
         </div>
 
         <div className="card">
-          <h2>Paiement</h2>
-          <p className="hint">Un moyen de paiement mobile est proposé aux clientes dès que son numéro est renseigné. Laissez vide pour le désactiver.</p>
-          <Toggle label="Paiement à la livraison" hint="La cliente paie en espèces à la réception du colis." checked={s.codEnabled !== false} onChange={(v) => set('codEnabled', v)} />
-          <div className="grid-2" style={{ marginTop: 14 }}>
-            {text('orangeMoneyNumber', 'Numéro Orange Money', { placeholder: '77 123 45 67', type: 'tel', hint: 'Numéro marchand ou personnel qui reçoit les paiements' })}
-            {text('waveNumber', 'Numéro Wave', { placeholder: '77 123 45 67', type: 'tel' })}
-            {text('freeMoneyNumber', 'Numéro Free Money / Mixx', { placeholder: '76 123 45 67', type: 'tel' })}
-            {text('waveLink', 'Lien de paiement Wave (optionnel)', { placeholder: 'https://pay.wave.com/m/…', type: 'url', hint: 'Lien marchand Wave Business : le montant est ajouté automatiquement.' })}
-          </div>
-        </div>
-
-        <div className="card">
-          <h2>Livraison</h2>
-          <div className="grid-2">
-            {num('deliveryFeeDakar', 'Frais Dakar et banlieue', 'Dakar, Pikine, Guédiawaye, Rufisque, Keur Massar…')}
-            {num('deliveryFeeRegions', 'Frais régions', 'Toutes les autres villes du Sénégal')}
-            {num('freeDeliveryFrom', 'Livraison offerte dès', 'Montant du panier à partir duquel la livraison est gratuite. 0 = jamais.')}
-          </div>
-          {text('deliveryInfo', 'Informations de livraison', { area: true, placeholder: 'Livraison sous 24 à 48 h à Dakar…', hint: 'Affiché sur les fiches produit et la page de commande.' })}
+          <h2>Paiement & livraison</h2>
+          <p className="hint" style={{ marginBottom: 12 }}>Numéros Orange Money / Wave, paiement à la livraison et frais de livraison se règlent sur une page dédiée, protégée par votre mot de passe.</p>
+          <Link href="/admin/paiement" className="a-btn ghost sm">Gérer le paiement et la livraison</Link>
         </div>
 
         <div className="card">

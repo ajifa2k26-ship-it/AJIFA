@@ -50,20 +50,70 @@ export function pickCategory(body = {}) {
 const SETTINGS_TEXT = [
   'siteName', 'tagline', 'heroTitle', 'heroSubtitle', 'aboutTitle', 'aboutText', 'phone', 'email',
   'address', 'openingHours', 'instagram', 'facebook', 'tiktok', 'announcement', 'seoDescription',
-  'orangeMoneyNumber', 'waveNumber', 'freeMoneyNumber', 'deliveryInfo',
+  'deliveryInfo',
 ];
 
+// Note : les moyens de paiement et les adresses autorisées ne passent PAS par ici,
+// mais par PUT /api/settings/payment, protégé par le mot de passe (voir pickPayment).
 export function pickSettings(body = {}) {
   const out = {};
   for (const k of SETTINGS_TEXT) if (has(body, k)) out[k] = toStr(body[k], 3000);
-  if (has(body, 'codEnabled')) out.codEnabled = toBool(body.codEnabled);
-  if (has(body, 'waveLink')) {
-    const link = toStr(body.waveLink, 300);
-    out.waveLink = /^https:\/\//.test(link) ? link : '';
-  }
   for (const k of ['deliveryFeeDakar', 'deliveryFeeRegions', 'freeDeliveryFrom']) if (has(body, k)) out[k] = toNum(body[k]) ?? 0;
   if (has(body, 'whatsapp')) out.whatsapp = String(body.whatsapp || '').replace(/\D/g, '').slice(0, 15);
   if (has(body, 'heroImage')) out.heroImage = toImage(body.heroImage);
   if (has(body, 'aboutImage')) out.aboutImage = toImage(body.aboutImage);
+  return out;
+}
+
+/**
+ * Réglages sensibles : numéros qui reçoivent l'argent et adresses autorisées.
+ * Lève une erreur lisible si une valeur est invalide (au lieu de l'ignorer en silence).
+ */
+export function pickPayment(body = {}, { normalizePhone, normalizeOrigin }) {
+  const out = {};
+  const fail = (msg) => {
+    const e = new Error(msg);
+    e.status = 400;
+    throw e;
+  };
+  if (has(body, 'codEnabled')) out.codEnabled = toBool(body.codEnabled);
+  const phones = { orangeMoneyNumber: 'Orange Money', waveNumber: 'Wave', freeMoneyNumber: 'Free Money' };
+  for (const [k, label] of Object.entries(phones)) {
+    if (!has(body, k)) continue;
+    const raw = toStr(body[k], 30);
+    if (!raw) {
+      out[k] = '';
+      continue;
+    }
+    const n = normalizePhone(raw);
+    if (!n || !n.startsWith('221')) fail(`Numéro ${label} invalide : 9 chiffres attendus (ex : 77 123 45 67)`);
+    out[k] = n;
+  }
+  if (has(body, 'waveLink')) {
+    const link = toStr(body.waveLink, 300);
+    if (!link) out.waveLink = '';
+    else {
+      let u;
+      try {
+        u = new URL(link);
+      } catch {
+        fail('Lien Wave invalide');
+      }
+      // Seuls les liens officiels Wave sont acceptés (évite de rediriger les clientes ailleurs)
+      if (u.protocol !== 'https:' || u.hostname !== 'pay.wave.com') fail('Le lien Wave doit commencer par https://pay.wave.com/');
+      out.waveLink = u.toString();
+    }
+  }
+  if (has(body, 'allowedOrigins')) {
+    const list = Array.isArray(body.allowedOrigins) ? body.allowedOrigins : String(body.allowedOrigins || '').split(/[\s,]+/);
+    const clean = [];
+    for (const raw of list.slice(0, 10)) {
+      if (!String(raw).trim()) continue;
+      const o = normalizeOrigin(raw);
+      if (!o) fail(`Adresse de site invalide : ${String(raw).slice(0, 60)}`);
+      clean.push(o);
+    }
+    out.allowedOrigins = [...new Set(clean)];
+  }
   return out;
 }

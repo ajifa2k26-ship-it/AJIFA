@@ -58,6 +58,8 @@ export type Settings = {
   waveNumber: string;
   waveLink: string;
   freeMoneyNumber: string;
+  paymentUpdatedAt?: string | null;
+  allowedOrigins?: string[];
   deliveryFeeDakar: number;
   deliveryFeeRegions: number;
   freeDeliveryFrom: number;

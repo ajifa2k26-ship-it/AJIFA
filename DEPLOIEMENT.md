@@ -162,10 +162,13 @@ Les clientes ajoutent des articles au panier (taille, couleur, quantité) puis c
 en indiquant **nom, téléphone, ville et adresse de livraison**. Chaque commande reçoit un numéro (`AJ-1001`…)
 consultable sur `/suivi-commande` avec le téléphone utilisé.
 
-- **Réglages → Paiement** : paiement à la livraison (activé par défaut). Orange Money, Wave et Free Money / Mixx
-  apparaissent dès que leur numéro est renseigné. Un lien marchand Wave Business (optionnel) ajoute un bouton
-  « Payer avec Wave » avec le montant pré-rempli.
-- **Réglages → Livraison** : frais Dakar et banlieue, frais régions, seuil de livraison offerte.
+- **Paiement** (menu de l'admin) : activez / désactivez chaque moyen (à la livraison, Orange Money, Wave,
+  Free Money / Mixx) et saisissez les numéros qui reçoivent l'argent. **Le mot de passe est redemandé à chaque
+  modification** : une session restée ouverte ne suffit pas pour détourner les paiements. Les numéros sont vérifiés
+  (9 chiffres sénégalais) et seul un lien  est accepté pour Wave.
+- **Paiement → Livraison** : frais Dakar et banlieue, frais régions, seuil de livraison offerte.
+- **Paiement → Avancé → Adresses du site** : le jour où vous achetez un nom de domaine, ajoutez-le ici
+  (ex : ) pour qu'il puisse passer des commandes, sans toucher à Render.
 - **Commandes** : liste filtrable, fiche détaillée (appel / WhatsApp de la cliente), changement de statut
   (Nouvelle → Confirmée → En livraison → Livrée, ou Annulée) et du paiement (En attente / Payée).
 

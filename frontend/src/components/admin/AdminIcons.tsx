@@ -19,3 +19,5 @@ export const LogoutI = (p: P) => <svg {...base} {...p}><path d="M15 4h4a1 1 0 01
 export const ExternalI = (p: P) => <svg {...base} {...p}><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5" /></svg>;
 export const BagI = (p: P) => <svg {...base} {...p}><path d="M5 8h14l-1 12H6L5 8z" /><path d="M9 10V6a3 3 0 016 0v4" /></svg>;
 export const PhoneI = (p: P) => <svg {...base} {...p}><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2" /></svg>;
+export const WalletI = (p: P) => <svg {...base} {...p}><path d="M4 7a2 2 0 012-2h11v4" /><path d="M4 7v11a2 2 0 002 2h14V9H6a2 2 0 01-2-2z" /><circle cx="16" cy="14.5" r="1.2" /></svg>;
+export const LockI = (p: P) => <svg {...base} {...p}><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" /></svg>;

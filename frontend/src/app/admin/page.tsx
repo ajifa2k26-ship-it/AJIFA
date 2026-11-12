@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/admin-api';
 import type { Product } from '@/lib/types';
 import { useAdmin } from '@/components/admin/AdminShell';
-import { BagI, FolderI, GearI, PlusI } from '@/components/admin/AdminIcons';
+import { BagI, FolderI, GearI, PlusI, WalletI } from '@/components/admin/AdminIcons';
 
 export default function Dashboard() {
   const { user, notify } = useAdmin();
@@ -78,6 +78,10 @@ export default function Dashboard() {
         <Link href="/admin/categories">
           <FolderI />
           <span><strong>Catégories</strong><small>Robes, ensembles, accessoires…</small></span>
+        </Link>
+        <Link href="/admin/paiement">
+          <WalletI />
+          <span><strong>Paiement & livraison</strong><small>Orange Money, Wave, frais de livraison</small></span>
         </Link>
         <Link href="/admin/parametres">
           <GearI />

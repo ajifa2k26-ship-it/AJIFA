@@ -36,6 +36,9 @@ const settingsSchema = new mongoose.Schema(
     waveNumber: { type: String, default: '' },
     waveLink: { type: String, default: '' }, // lien marchand Wave (optionnel), ex : https://pay.wave.com/m/M_xxx/c/sn/
     freeMoneyNumber: { type: String, default: '' },
+    paymentUpdatedAt: { type: Date, default: null }, // dernière modification des moyens de paiement
+    // Adresses du site autorisées à appeler l'API, en plus de CORS_ORIGINS (ex : futur nom de domaine)
+    allowedOrigins: { type: [String], default: [] },
     // --- Boutique : livraison (FCFA) ---
     deliveryFeeDakar: { type: Number, default: 2000, min: 0 },
     deliveryFeeRegions: { type: Number, default: 3500, min: 0 },
