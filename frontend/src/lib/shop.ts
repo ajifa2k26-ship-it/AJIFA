@@ -46,9 +46,9 @@ export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
 export function enabledPaymentMethods(s: Settings): PaymentMethod[] {
   const m: PaymentMethod[] = [];
   if (s.codEnabled !== false) m.push('cash');
-  if (s.orangeMoneyNumber) m.push('orange_money');
-  if (s.waveNumber || s.waveLink) m.push('wave');
-  if (s.freeMoneyNumber) m.push('free_money');
+  if (s.orangeMoneyNumber || s.orangeMoneyQr?.url) m.push('orange_money');
+  if (s.waveNumber || s.waveLink || s.waveQr?.url) m.push('wave');
+  if (s.freeMoneyNumber || s.freeMoneyQr?.url) m.push('free_money');
   return m;
 }
 
@@ -57,6 +57,12 @@ export function paymentNumber(s: Settings, method: PaymentMethod) {
   if (method === 'wave') return s.waveNumber;
   if (method === 'free_money') return s.freeMoneyNumber;
   return '';
+}
+
+/** QR code marchand importé par l'admin pour ce moyen de paiement */
+export function paymentQr(s: Settings, method: PaymentMethod) {
+  const img = method === 'orange_money' ? s.orangeMoneyQr : method === 'wave' ? s.waveQr : method === 'free_money' ? s.freeMoneyQr : null;
+  return img?.url || null;
 }
 
 /** Lien de paiement marchand Wave avec le montant pré-rempli */

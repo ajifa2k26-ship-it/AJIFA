@@ -58,6 +58,9 @@ export type Settings = {
   waveNumber: string;
   waveLink: string;
   freeMoneyNumber: string;
+  orangeMoneyQr?: ImageAsset | null;
+  waveQr?: ImageAsset | null;
+  freeMoneyQr?: ImageAsset | null;
   paymentUpdatedAt?: string | null;
   allowedOrigins?: string[];
   deliveryFeeDakar: number;

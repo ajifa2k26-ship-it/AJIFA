@@ -67,7 +67,7 @@ type UploaderProps = {
   value: ImageAsset[];
   onChange: (v: ImageAsset[]) => void;
   max?: number;
-  folder?: 'produits' | 'categories' | 'site';
+  folder?: 'produits' | 'categories' | 'site' | 'paiement';
   wide?: boolean;
 };
 
